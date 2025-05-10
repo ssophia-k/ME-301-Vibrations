@@ -7,9 +7,9 @@ import scipy.signal as signal
 Read in the data
 '''
 #File path
-time_data_file_path = 'Cross Spectrum Final proj/Data/Brooks/time_domain.txt'
-fft_mag_file_path = 'Cross Spectrum Final proj/Data/Brooks/fft_mag.txt'
-fft_phase_file_path = 'Cross Spectrum Final proj/Data/Brooks/fft_phase.txt'
+time_data_file_path = 'Cross Spectrum Final proj/Data/Anechoic_269hz_speaker_ground/time_domain.txt'
+fft_mag_file_path = 'Cross Spectrum Final proj/Data/Anechoic_269hz_speaker_ground/fft_mag.txt'
+fft_phase_file_path = 'Cross Spectrum Final proj/Data/Anechoic_269hz_speaker_ground/fft_phase.txt'
 
 # Read the fft data, skipping the first line (header) and setting column names
 fft_mag_data = pd.read_csv(fft_mag_file_path, delim_whitespace=True, skiprows=1, names=["Frequency1", "Microphone", "Frequency2", "Accelerometer"])
@@ -26,14 +26,14 @@ time_data = time_data.drop(columns=["Time2"])
 Further processing of the data
 '''
 # Get the cross spectrum
-cross_frequencies, cross_spectrum = signal.csd(time_data["Microphone"], time_data["Accelerometer"], fs=51200, nperseg=10240)
+cross_frequencies, cross_spectrum = signal.csd(time_data["Microphone"], time_data["Accelerometer"], fs=51200, nperseg=16384)
 cross_magnitude = np.abs(cross_spectrum)
 cross_phase = np.angle(cross_spectrum, deg=True)  # Convert to degrees
 cross_phase = np.mod(cross_phase, 360)  # Ensure phase is between 0 and 360 degrees
 cross_phase = cross_phase - 180  # Shift phase by -180 degrees
 
 # Get the coherence function
-coherence_frequencies, coherence = signal.coherence(time_data["Microphone"], time_data["Accelerometer"], fs=51200, nperseg=10240)
+coherence_frequencies, coherence = signal.coherence(time_data["Microphone"], time_data["Accelerometer"], fs=51200, nperseg=16384)
 
 
 
@@ -61,7 +61,8 @@ plt.ylabel('Amplitude')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig('Cross Spectrum Final proj/Plots/anechoic_269hz_speaker_ground/fft.png')
+
 
 # Plot cross spectrum magnitude and phase
 # Only plot up to 5000 Hz
@@ -81,7 +82,7 @@ plt.title('Cross Spectrum Phase')
 plt.ylabel('Phase (radians)')
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig('Cross Spectrum Final proj/Plots/anechoic_269hz_speaker_ground/cross.png')
 
 # Plot coherence
 #Only plot up to 5000 Hz
@@ -94,4 +95,6 @@ plt.ylabel('Coherence')
 plt.xlabel('Frequency (Hz)')
 plt.grid(True)
 plt.tight_layout()
-plt.show()
+plt.savefig('Cross Spectrum Final proj/Plots/anechoic_269hz_speaker_ground/coherence.png')
+
+
